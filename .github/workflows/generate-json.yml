@@ -1,0 +1,44 @@
+name: Generate OpenAI OpenAPI JSON
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Fetch and convert YAML to JSON
+        run: |
+          curl -s https://raw.githubusercontent.com/openai/openai-openapi/manual_spec/openapi.yaml -o openapi.yaml
+          python3 -c "
+import json, yaml
+with open('openapi.yaml') as f:
+    data = yaml.safe_load(f)
+with open('openai-openapi.json', 'w') as f:
+    json.dump(data, f, indent=2)
+print(f'Written {len(open(\"openai-openapi.json\").read())} bytes')
+"
+
+      - name: Commit if changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add openai-openapi.json
+          git diff --cached --quiet || git commit -m 'chore: update openai-openapi.json from manual_spec'
+          git push
