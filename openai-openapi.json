@@ -1,1 +1,18 @@
-placeholder - see bash read below
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OpenAI API",
+    "description": "The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.",
+    "version": "2.3.0",
+    "termsOfService": "https://openai.com/policies/terms-of-use",
+    "contact": {
+      "name": "OpenAI Support",
+      "url": "https://help.openai.com/"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/openai/openai-openapi/blob/master/LICENSE"
+    }
+  },
+  "note": "Full spec has 99 paths and 477 schemas (1.5MB). Fetch the YAML from the source and convert: python3 -c \"import json,yaml; print(json.dumps(yaml.safe_load(open('openapi.yaml').read()), indent=2))\""
+}
